@@ -8,11 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import ru.tronin.models.SpaceObject;
-import sun.jvm.hotspot.gc.shared.Space;
 
 public class MyGame extends ApplicationAdapter {
     SpriteBatch batch;
-    Texture img;
+    Texture background;
     Texture spaceManAndRocket;
     SpaceObject spaceMan;
     SpaceObject spaceRocket;
@@ -23,14 +22,14 @@ public class MyGame extends ApplicationAdapter {
         spaceMan = new SpaceObject(-500,1100, 50, new TextureRegion(spaceManAndRocket, 0, 0, 460, 700));
         spaceRocket = new SpaceObject(1000, 1100,50,new TextureRegion(spaceManAndRocket, 460, 0, 400, 700));
         batch = new SpriteBatch();
-        img = new Texture("bck.jpeg");
+        background = new Texture("bck.jpeg");
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(1, 0, 0, 1);
         batch.begin();
-        batch.draw(img, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(
                 spaceMan.getTextureRegion(),
                 spaceMan.getX(),
@@ -66,7 +65,8 @@ public class MyGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        img.dispose();
+        background.dispose();
+        spaceManAndRocket.dispose();
     }
 
 
