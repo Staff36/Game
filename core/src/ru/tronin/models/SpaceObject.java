@@ -1,48 +1,36 @@
 package ru.tronin.models;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 public class SpaceObject {
-    private int x, y;
-    private float rotation;
-    private TextureRegion textureRegion;
 
-    public SpaceObject(int x, int y, float rotation, TextureRegion textureRegion) {
-        this.x = x;
-        this.y = y;
-        this.rotation = rotation;
-        this.textureRegion = textureRegion;
+    private Vector2 coordinates;
+    private TextureRegion region;
+
+    public SpaceObject(Vector2 coordinates, TextureRegion textureRegion) {
+        this.coordinates = coordinates;
+        this.region = textureRegion;
     }
 
-    public int getX() {
-        return x;
+    public SpaceObject(float x, float y, TextureRegion textureRegion){
+        this(new Vector2(x, y), textureRegion);
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public Vector2 getCoordinates() {
+        return coordinates;
     }
 
-    public int getY() {
-        return y;
+    public void setCoordinates(Vector2 coordinates) {
+        this.coordinates = coordinates;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public TextureRegion getRegion() {
+        return region;
     }
 
-    public float getRotation() {
-        return rotation;
+    public void setRegion(TextureRegion region) {
+        this.region = region;
     }
 
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
-    }
-
-    public TextureRegion getTextureRegion() {
-        return textureRegion;
-    }
-
-    public void setTextureRegion(TextureRegion textureRegion) {
-        this.textureRegion = textureRegion;
-    }
 }
