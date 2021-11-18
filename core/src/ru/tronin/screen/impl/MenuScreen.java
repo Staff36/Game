@@ -30,6 +30,7 @@ public class MenuScreen extends BaseScreen {
         super.render(delta);
         moveSpaceObjectToCoordinates(spaceMan, touchVector, 3f);
         batch.begin();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(spaceMan.getRegion(), spaceMan.getCoordinates().x, spaceMan.getCoordinates().y, 100, 150);
         batch.end();
     }
