@@ -3,7 +3,7 @@ package ru.tronin.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import ru.tronin.MyGame;
+import ru.tronin.StarGame;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {
@@ -11,6 +11,6 @@ public class DesktopLauncher {
         config.width = 400;
         config.height = 700;
         config.resizable = false;
-        new LwjglApplication(new MyGame(), config);
+        new LwjglApplication(new StarGame(), config);
     }
 }
