@@ -7,7 +7,6 @@ import ru.tronin.math.Rect;
 import ru.tronin.screen.impl.GameScreen;
 import ru.tronin.sprite.BaseButton;
 
-
 public class ButtonPlay extends BaseButton {
 
     private static final float HEIGHT = 0.25f;

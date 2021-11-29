@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import ru.tronin.math.Rect;
 import ru.tronin.sprite.BaseButton;
 
-
 public class ButtonExit extends BaseButton {
 
     private static final float HEIGHT = 0.2f;

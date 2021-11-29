@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import ru.tronin.math.Rect;
 import ru.tronin.sprite.Sprite;
 
-
 public class Star extends Sprite {
 
     private Rect worldBounds;
@@ -15,15 +14,15 @@ public class Star extends Sprite {
 
     public Star(TextureAtlas atlas) {
         super(atlas.findRegion("star"));
-        float x = MathUtils.random(-0.0005f, 0.0005f);
-        float y = MathUtils.random(-0.05f, -0.001f);
+        float x = MathUtils.random(-0.005f, 0.005f);
+        float y = MathUtils.random(-0.4f, -0.1f);
         this.v = new Vector2(x, y);
     }
 
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
-        setHeightProportion(0.3f * v.y);
+        setHeightProportion(0.04f * v.y);
         float x = MathUtils.random(worldBounds.getLeft(), worldBounds.getRight());
         float y = MathUtils.random(worldBounds.getBottom(), worldBounds.getTop());
         this.pos.set(x, y);

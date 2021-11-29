@@ -12,7 +12,6 @@ import ru.tronin.sprite.impl.ButtonExit;
 import ru.tronin.sprite.impl.ButtonPlay;
 import ru.tronin.sprite.impl.Star;
 
-
 public class MenuScreen extends BaseScreen {
 
     private static final int STAR_COUNT = 256;

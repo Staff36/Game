@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import ru.tronin.math.MatrixUtils;
 import ru.tronin.math.Rect;
 
-
 public class BaseScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
@@ -54,7 +53,7 @@ public class BaseScreen implements Screen, InputProcessor {
 
         float aspect = width / (float) height;
         worldBounds.setHeight(1f);
-        worldBounds.setWidth(1f * aspect);
+        worldBounds.setWidth(aspect);
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
         resize(worldBounds);
