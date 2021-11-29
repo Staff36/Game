@@ -1,6 +1,7 @@
 package ru.tronin.screen.impl;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -20,7 +21,6 @@ public class MenuScreen extends BaseScreen {
 
     private Texture bg;
     private Background background;
-
     private TextureAtlas atlas;
     private Star[] stars;
     private ButtonExit buttonExit;
