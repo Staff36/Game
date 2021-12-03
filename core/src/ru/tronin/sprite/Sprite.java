@@ -1,5 +1,6 @@
 package ru.tronin.sprite;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +15,7 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame;
     private boolean destroyed;
+    protected Sound shooting;
 
     public Sprite() {
 
@@ -24,8 +26,9 @@ public class Sprite extends Rect {
         regions[0] = region;
     }
 
-    public Sprite(TextureRegion region, int rows, int cols, int frames) {
+    public Sprite(TextureRegion region, int rows, int cols, int frames, Sound shooting) {
         regions = Regions.split(region, rows, cols, frames);
+        this.shooting = shooting;
     }
 
     public void resize(Rect worldBounds) {

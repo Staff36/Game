@@ -1,5 +1,6 @@
 package ru.tronin.sprite.impl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +15,8 @@ public class MainShip extends Sprite {
     private static final float HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
+    private static final int SHOOTING_BREAK_TIME = 20;
+
 
     private final Vector2 v;
     private final Vector2 v0;
@@ -31,9 +34,10 @@ public class MainShip extends Sprite {
 
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
+    private int shootingBreakCounter = 0;
 
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
-        super(atlas.findRegion("main_ship"), 1, 2, 2);
+        super(atlas.findRegion("main_ship"), 1, 2, 2, Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav")));
         this.v = new Vector2();
         this.v0 = new Vector2(0.5f, 0f);
         this.bulletPool = bulletPool;
@@ -53,22 +57,20 @@ public class MainShip extends Sprite {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
-//        if (getRight() > worldBounds.getRight()) {
-//            setRight(worldBounds.getRight());
-//            stop();
-//        }
-//        if (getLeft() < worldBounds.getLeft()) {
-//            setLeft(worldBounds.getLeft());
-//            stop();
-//        }
-
-        if (getLeft() > worldBounds.getRight()) {
-            setRight(worldBounds.getLeft());
+        if (getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
         }
-        if (getRight() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getRight());
+        if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
+            stop();
+        }
+        if (shootingBreakCounter++ >= SHOOTING_BREAK_TIME){
+            shootingBreakCounter = 0;
+            shoot();
         }
     }
+
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
@@ -120,9 +122,6 @@ public class MainShip extends Sprite {
                 pressedRight = true;
                 moveRight();
                 break;
-            case Input.Keys.UP:
-                shoot();
-                break;
         }
         return false;
     }
@@ -166,5 +165,6 @@ public class MainShip extends Sprite {
     private void shoot() {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage);
+        shooting.play(1f);
     }
 }
