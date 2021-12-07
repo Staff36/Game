@@ -16,6 +16,7 @@ import ru.tronin.pool.impl.ExplosionPool;
 import ru.tronin.screen.BaseScreen;
 import ru.tronin.sprite.impl.Background;
 import ru.tronin.sprite.impl.Bullet;
+import ru.tronin.sprite.impl.ButtonNewGame;
 import ru.tronin.sprite.impl.EnemyShip;
 import ru.tronin.sprite.impl.GameOver;
 import ru.tronin.sprite.impl.MainShip;
@@ -29,7 +30,7 @@ public class GameScreen extends BaseScreen {
     private Texture bg;
     private Background background;
     private GameOver gameOver;
-
+    private ButtonNewGame buttonNewGame;
     private ExplosionPool explosionPool;
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
@@ -56,22 +57,25 @@ public class GameScreen extends BaseScreen {
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
 
         gameOver = new GameOver(atlas);
-
+        buttonNewGame = new ButtonNewGame(atlas, this);
         explosionPool = new ExplosionPool(atlas, explosionSound);
         bulletPool = new BulletPool();
         enemyPool = new EnemyPool(explosionPool, bulletPool, bulletSound, worldBounds);
-
         stars = new Star[STAR_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
         mainShip = new MainShip(atlas, explosionPool, bulletPool, laserSound);
-
         enemyEmitter = new EnemyEmitter(atlas, worldBounds, enemyPool);
-
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
         music.play();
+    }
+
+    public void restartGame(){
+        enemyPool = new EnemyPool(explosionPool, bulletPool, bulletSound, worldBounds);
+        mainShip = new MainShip(atlas, explosionPool, bulletPool, laserSound);
+        enemyEmitter = new EnemyEmitter(atlas, worldBounds, enemyPool);
     }
 
     @Override
@@ -92,6 +96,8 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.resize(worldBounds);
         gameOver.resize(worldBounds);
+        buttonNewGame.resize(worldBounds);
+        buttonNewGame.setWorldBounds(worldBounds);
     }
 
     @Override
@@ -111,12 +117,14 @@ public class GameScreen extends BaseScreen {
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         mainShip.touchDown(touch, pointer, button);
+        buttonNewGame.touchDown(touch,pointer,button);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
         mainShip.touchUp(touch, pointer, button);
+        buttonNewGame.touchUp(touch,pointer,button);
         return false;
     }
 
@@ -202,6 +210,7 @@ public class GameScreen extends BaseScreen {
             enemyPool.drawActiveSprites(batch);
         } else {
             gameOver.draw(batch);
+            buttonNewGame.draw(batch);
         }
         explosionPool.drawActiveSprites(batch);
         batch.end();
