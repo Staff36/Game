@@ -25,7 +25,7 @@ public class EnemyShip extends Ship {
             destroy();
         }
         if (this.getTop() > worldBounds.getTop()){
-
+            pos.mulAdd(v0, delta);
         }
     }
 
@@ -41,6 +41,7 @@ public class EnemyShip extends Ship {
             int hp
     ) {
         this.regions = regions;
+        this.v.set(v);
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
         this.bulletV = bulletV;
@@ -48,5 +49,6 @@ public class EnemyShip extends Ship {
         this.reloadInterval = reloadInterval;
         setHeightProportion(height);
         this.hp = hp;
+        v0.set(v).add(0, this.getHeight() * -2);
     }
 }
