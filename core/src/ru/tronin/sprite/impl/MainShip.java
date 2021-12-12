@@ -50,6 +50,19 @@ public class MainShip extends Ship {
         rightPointer = INVALID_POINTER;
         pos.x = worldBounds.pos.x;
     }
+        @Override
+    public void damage(int damage) {
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            destroy();
+        }
+        if (hp > 100){
+            hp = 100;
+        }
+        damageAnimateTimer = 0f;
+        frame = 1;
+    }
 
     @Override
     public void resize(Rect worldBounds) {

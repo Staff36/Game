@@ -5,10 +5,13 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.List;
+import java.util.Random;
 
 import ru.tronin.font.Font;
 import ru.tronin.math.Rect;
@@ -16,7 +19,7 @@ import ru.tronin.pool.impl.BulletPool;
 import ru.tronin.pool.impl.EnemyPool;
 import ru.tronin.pool.impl.ExplosionPool;
 import ru.tronin.screen.BaseScreen;
-import ru.tronin.sprite.Sprite;
+import ru.tronin.sprite.impl.RepairKit;
 import ru.tronin.sprite.impl.Background;
 import ru.tronin.sprite.impl.Bullet;
 import ru.tronin.sprite.impl.ButtonNewGame;
@@ -39,6 +42,8 @@ public class GameScreen extends BaseScreen {
     private Background background;
     private GameOver gameOver;
     private ButtonNewGame buttonNewGame;
+    private Texture repair;
+    private Random random;
 
     private ExplosionPool explosionPool;
     private BulletPool bulletPool;
@@ -54,7 +59,7 @@ public class GameScreen extends BaseScreen {
     private Sound explosionSound;
 
     private EnemyEmitter enemyEmitter;
-
+    private RepairKit repairKit;
     private int frags;
 
     private Font font;
@@ -66,12 +71,13 @@ public class GameScreen extends BaseScreen {
     public void show() {
         super.show();
         bg = new Texture("textures/bg.png");
+        repair = new Texture("textures/repair.png");
         background = new Background(bg);
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
-
+        random = new Random();
         font = new Font("font/font.fnt", "font/font.png");
         font.setSize(0.02f);
         sbFrags = new StringBuilder();
@@ -91,9 +97,11 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new TrackingStar(atlas, mainShip.getV());
         }
-
         enemyEmitter = new EnemyEmitter(atlas, worldBounds, enemyPool);
 
+        repairKit = new RepairKit(explosionPool, worldBounds);
+        setNewRepairKit(repairKit);
+        repairKit.pos.set( new Vector2(-2f, -2f));
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
         music.play();
@@ -102,9 +110,7 @@ public class GameScreen extends BaseScreen {
 
     public void startNewGame() {
         frags = 0;
-
         mainShip.startNewGame();
-
         bulletPool.freeAllActiveSprites();
         enemyPool.freeAllActiveSprites();
         explosionPool.freeAllActiveSprites();
@@ -129,6 +135,7 @@ public class GameScreen extends BaseScreen {
         mainShip.resize(worldBounds);
         gameOver.resize(worldBounds);
         buttonNewGame.resize(worldBounds);
+        repairKit.resize(worldBounds);
     }
 
     @Override
@@ -144,6 +151,7 @@ public class GameScreen extends BaseScreen {
         bulletSound.dispose();
         explosionSound.dispose();
         font.dispose();
+        repair.dispose();
     }
 
     @Override
@@ -187,6 +195,18 @@ public class GameScreen extends BaseScreen {
             bulletPool.updateActiveSprites(delta);
             enemyPool.updateActiveSprites(delta);
             enemyEmitter.generate(delta, frags);
+            if (repairKit.isDestroyed()){
+                int i = random.nextInt(5000);
+                if (i < 5 && i > 0 ){
+                    repairKit.setBottom(worldBounds.getTop() + 0.1f);
+                    repairKit.pos.x = MathUtils.random(
+                            worldBounds.getLeft() + repairKit.getHalfWidth(),
+                            worldBounds.getRight() - repairKit.getHalfWidth());
+                    setNewRepairKit(repairKit);
+                }
+            }
+
+            repairKit.update(delta);
         }
         explosionPool.updateActiveSprites(delta);
     }
@@ -230,6 +250,15 @@ public class GameScreen extends BaseScreen {
                     bullet.destroy();
                 }
             }
+            if (repairKit.isBulletCollision(bullet)){
+                repairKit.damage(bullet.getDamage() * 20);
+                bullet.destroy();
+            }
+        }
+        float minDistForRepairKit = (mainShip.getWidth() + repairKit.getWidth()) * 0.5f;
+        if (mainShip.pos.dst(repairKit.pos) < minDistForRepairKit) {
+            mainShip.damage(repairKit.getHp() * (-1));
+            repairKit.destroy();
         }
     }
 
@@ -249,6 +278,7 @@ public class GameScreen extends BaseScreen {
             mainShip.draw(batch);
             bulletPool.drawActiveSprites(batch);
             enemyPool.drawActiveSprites(batch);
+            repairKit.draw(batch);
         } else {
             gameOver.draw(batch);
             buttonNewGame.draw(batch);
@@ -268,5 +298,13 @@ public class GameScreen extends BaseScreen {
         sbLevel.setLength(0);
         font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()),
                 worldBounds.getRight() - MARGIN, worldBounds.getTop() - MARGIN, Align.right);
+    }
+
+    private void setNewRepairKit(RepairKit repairKit){
+        TextureRegion[] textureRegions = new TextureRegion[1];
+        textureRegions[0] = new TextureRegion(repair, 0,0,510,510);
+        repairKit.set(textureRegions,  new Vector2(0,-0.3f), 0.05f, 100);
+        repairKit.repair();
+
     }
 }
